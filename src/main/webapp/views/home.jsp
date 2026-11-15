@@ -32,6 +32,13 @@
                             Signup
                         </button>
                     </li>
+                    <c:if test="${not empty sessionScope.userEmail}">
+                        <li class="nav-item ms-3">
+                    <span class="badge text-bg-success p-2">
+                        Logged in as: ${sessionScope.name}
+                    </span>
+                        </li>
+                    </c:if>
                 </ul>
             </div>
         </dialog>
@@ -65,6 +72,7 @@
         </div>
     </div>
 </c:if>
+
 <div class="container d-flex justify-content-center">
 
     <div class="card p-4">
