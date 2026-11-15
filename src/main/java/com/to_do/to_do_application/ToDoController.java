@@ -103,9 +103,30 @@ public class ToDoController {
             return "redirect:/home";
         }
         int userId= ((Number)userIdObject).intValue();
-        sql="SELECT task_id, title, description, due_date, priority, category, status FROM tasks where user_id = ? ORDER BY due_date ASC";
+        sql="SELECT task_id, title, description, due_date, priority, category, status, CASE WHEN STATUS != 'COMPLETED' THEN DATEDIFF(due_date, CURDATE()) ELSE 0 END AS overdue_days FROM tasks where user_id = ? ORDER BY due_date ASC";
         List<Map<String, Object>> tasks = jdbcTemplate.queryForList(sql, userId);
         model.addAttribute("tasks", tasks);
         return "home";
+    }
+    @RequestMapping("updateTaskStatus")
+    public String updateTaskStatus(@RequestParam int taskId, @RequestParam String status, HttpSession session, RedirectAttributes redirectAttributes){
+        Object userIdObject = session.getAttribute("userId");
+        if(userIdObject == null){
+            redirectAttributes.addFlashAttribute("errorMessage", "Please login first.");
+            return "redirect:/home";
+        }
+        int userId=((Number)userIdObject).intValue();
+        if(!List.of("PENDING", "IN_PROGRESS", "COMPLETED").contains(status)){
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid task status.");
+            return "redirect:/home";
+        }
+        sql="UPDATE tasks SET STATUS = ? WHERE user_id = ? and task_id = ?";
+        int rowsAffected=jdbcTemplate.update(sql,status, userId, taskId);
+        if(rowsAffected>0){
+            redirectAttributes.addFlashAttribute("successMessage", "Status for the task updated successfully");
+        }else{
+            redirectAttributes.addFlashAttribute("errorMessage", "Task not found");
+        }
+        return "redirect:/home";
     }
 }

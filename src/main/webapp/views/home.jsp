@@ -8,7 +8,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
 <style>
     /* Dropdown styling */
-    #priority, #category {
+    #priority, #category, #updateStatus {
         border-radius: 8px;
         padding: 10px 12px;
         border: 1px solid #ced4da;
@@ -19,14 +19,14 @@
     }
 
     /* Focus effect */
-    #priority:focus, #category:focus {
+    #priority:focus, #category:focus, #updateStatus:focus {
         border-color: #86b7fe;
         box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
         outline: none;
     }
 
     /* Individual options */
-    #priority, #category option {
+    #priority, #category, #updateStatus option {
         padding: 10px;
         background-color: #ffffff;
         color: #212529;
@@ -137,65 +137,129 @@
     </form>
 </div>
 <c:if test="${not empty sessionScope.userId}">
-<div class="container mt-4">
+    <div class="container mt-4">
 
-    <c:choose>
+        <c:choose>
 
-        <c:when test="${not empty tasks}">
+            <c:when test="${not empty tasks}">
 
-            <c:forEach var="task" items="${tasks}">
+                <div class="table-responsive">
 
-                <div class="card mb-3 shadow-sm">
+                    <table class="table table-bordered table-hover align-middle">
 
-                    <div class="card-body">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Task ID</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Due Date</th>
+                            <th>Pending Days</th>
+                            <th>Priority</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
 
-                        <h5 class="card-title">
-                                ${task.title}
-                        </h5>
+                        <tbody>
 
-                        <p class="card-text">
-                                ${task.description}
-                        </p>
+                        <c:forEach var="task" items="${tasks}">
 
-                        <p>
-                            <strong>Due Date:</strong>
-                                ${task.due_date}
-                        </p>
+                            <tr>
 
-                        <p>
-                            <strong>Priority:</strong>
-                                ${task.priority}
-                        </p>
+                                <td>${task.task_id}</td>
+                                <td>${task.title}</td>
+                                <td>${task.description}</td>
+                                <td>${task.due_date}</td>
+                                <td>${task.overdue_days}</td>
+                                <td>
+                                    <c:choose>
 
-                        <p>
-                            <strong>Category:</strong>
-                                ${task.category}
-                        </p>
+                                        <c:when test="${task.priority == 'HIGH'}">
+                                            <span class="badge bg-danger">HIGH</span>
+                                        </c:when>
 
-                        <p>
-                            <strong>Status:</strong>
-                                ${task.status}
-                        </p>
+                                        <c:when test="${task.priority == 'MEDIUM'}">
+                                            <span class="badge bg-warning text-dark">MEDIUM</span>
+                                        </c:when>
 
-                    </div>
+                                        <c:when test="${task.priority == 'LOW'}">
+                                            <span class="badge bg-success">LOW</span>
+                                        </c:when>
+
+                                        <c:otherwise>
+                                            <span class="badge bg-secondary">
+                                                    ${task.priority}
+                                            </span>
+                                        </c:otherwise>
+
+                                    </c:choose>
+                                </td>
+                                <td>${task.category}</td>
+                                <td>${task.status}</td>
+
+                                <td>
+
+                                    <form action="${pageContext.request.contextPath}/updateTaskStatus"
+                                          method="post">
+
+                                        <input type="hidden"
+                                               name="taskId"
+                                               value="${task.task_id}">
+
+                                        <select name="status"
+                                                class="form-select mb-2" id="updateStatus"
+                                                required>
+
+                                            <option value="PENDING"
+                                                ${task.status == 'PENDING' ? 'selected' : ''}>
+                                                Pending
+                                            </option>
+
+                                            <option value="IN_PROGRESS"
+                                                ${task.status == 'IN_PROGRESS' ? 'selected' : ''}>
+                                                In Progress
+                                            </option>
+
+                                            <option value="COMPLETED"
+                                                ${task.status == 'COMPLETED' ? 'selected' : ''}>
+                                                Completed
+                                            </option>
+
+                                        </select>
+
+                                        <button type="submit"
+                                                class="btn btn-primary bg-accent fg-contrast-accent">
+                                            Update Status
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                        </c:forEach>
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
-            </c:forEach>
+            </c:when>
 
-        </c:when>
+            <c:otherwise>
 
-        <c:otherwise>
+                <div class="alert alert-info">
+                    You don't have any tasks yet!
+                </div>
 
-            <div class="alert alert-info">
-                You don't have any tasks yet!
-            </div>
+            </c:otherwise>
 
-        </c:otherwise>
+        </c:choose>
 
-    </c:choose>
-
-</div>
+    </div>
 </c:if>
 <!-- Signup Modal -->
 <dialog class="dialog dialog-slide-down" id="signupModal">
