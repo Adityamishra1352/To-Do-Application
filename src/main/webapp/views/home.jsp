@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <!DOCTYPE html>
 <html>
@@ -22,20 +23,48 @@
                         <a class="nav-link active" aria-current="page" href="home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="login">Login</a>
+                        <button type="button" class="nav-link" data-bs-toggle="dialog" data-bs-target="#loginModal">
+                            Login
+                        </button>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"
-                           data-bs-toggle="modal"
-                           data-bs-target="#signupModal">
+                        <button type="button" class="nav-link" data-bs-toggle="dialog" data-bs-target="#signupModal">
                             Signup
-                        </a>
+                        </button>
                     </li>
                 </ul>
             </div>
         </dialog>
     </div>
 </nav>
+<c:if test="${not empty successMessage}">
+    <div class="container mt-3">
+        <div class="alert alert-success alert-dismissible fade show"
+             role="alert">
+
+                ${successMessage}
+
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    </div>
+</c:if>
+<c:if test="${not empty errorMessage}">
+    <div class="container mt-3">
+        <div class="alert alert-danger alert-dismissible fade show"
+             role="alert">
+
+                ${errorMessage}
+
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    </div>
+</c:if>
 <div class="container d-flex justify-content-center">
 
     <div class="card p-4">
@@ -48,61 +77,54 @@
     <input type="button" class="btn-solid theme-accent" value="View All Tasks" placeholder="View All Tasks">
 </div>
 <!-- Signup Modal -->
-
-<div class="modal fade" id="signupModal" tabindex="-1"
-     aria-labelledby="signupModalLabel" aria-hidden="true">
-
-    <div class="modal-dialog modal-dialog-centered">
-
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title" id="signupModalLabel">
-                    Create Your Account
-                </h5>
-
-                <button type="button" class="btn-close"
-                        data-bs-dismiss="modal">
-                </button>
-            </div>
-
-            <div class="modal-body">
-
-                <form action="${pageContext.request.contextPath}/signup"
-                      method="post">
-
-                    <div class="mb-3">
-                        <label class="form-label">Email Address</label>
-
-                        <input type="email"
-                               class="form-control"
-                               name="email"
-                               placeholder="Enter your email"
-                               required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Password</label>
-
-                        <input type="password"
-                               class="form-control"
-                               name="password"
-                               placeholder="Create a password"
-                               minlength="8"
-                               required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100">
-                        Sign Up
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
+<dialog class="dialog dialog-slide-down" id="signupModal">
+    <div class="dialog-header">
+        <h1 class="dialog-title">Signup to the To Do Application</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="dialog" aria-label="Close"></button>
     </div>
-</div>
+        <form action="signup" method="post">
+            <div class = "m-3">
+                <label class="form-label">Name:</label>
+                <input type = "text" class="form-control w-15" name = "name" placeholder="Enter your name" required>
+            </div>
+            <div class = "m-3">
+                <label class="form-label">Email Address:</label>
+                <input type = "text" class="form-control w-15" name = "email" placeholder="Enter your email address" required>
+            </div>
+            <div class = "m-3">
+                <label class="form-label">Password:</label>
+                <input type = "password" class="form-control w-15" name = "password" placeholder="Enter your password" required>
+            </div>
+            <div class="dialog-footer">
+                <button type="button" class="btn-solid theme-secondary" data-bs-dismiss="dialog">Close</button>
+                <input type="submit" class="btn-solid theme-primary" name="Submit">
+            </div>
+        </form>
+
+</dialog>
+<!-- Login Modal -->
+<dialog class="dialog dialog-slide-down" id="loginModal">
+    <div class="dialog-header">
+        <h1 class="dialog-title">Login into the ToDo Application</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="dialog" aria-label="Close"></button>
+    </div>
+    <form action="login" method="post">
+        <div class = "m-3">
+            <label class="form-label">Email Address:</label>
+            <input type = "text" class="form-control w-15" name = "email" placeholder="Enter your email address" required>
+        </div>
+        <div class = "m-3">
+            <label class="form-label">Password:</label>
+            <input type = "password" class="form-control w-15" name = "password" placeholder="Enter your password" required>
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn-solid theme-secondary" data-bs-dismiss="dialog">Close</button>
+            <input type="submit" class="btn-solid theme-primary" name="Submit">
+        </div>
+    </form>
+
+</dialog>
+
 </body>
 <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL" crossorigin="anonymous"></script>
 </html>
