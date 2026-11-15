@@ -9,9 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -106,6 +104,7 @@ public class ToDoController {
         sql="SELECT task_id, title, description, due_date, priority, category, status, CASE WHEN STATUS != 'COMPLETED' THEN DATEDIFF(due_date, CURDATE()) ELSE 0 END AS overdue_days FROM tasks where user_id = ? ORDER BY due_date ASC";
         List<Map<String, Object>> tasks = jdbcTemplate.queryForList(sql, userId);
         model.addAttribute("tasks", tasks);
+        redirectAttributes.addFlashAttribute("viewTasksMessage", "Success");
         return "home";
     }
     @RequestMapping("updateTaskStatus")
@@ -129,4 +128,31 @@ public class ToDoController {
         }
         return "redirect:/home";
     }
+
+
+    @GetMapping("/dailyReminder")
+    @ResponseBody
+    public List<Map<String, Object>> dailyReminder(HttpSession session) {
+
+        Object userIdObject = session.getAttribute("userId");
+
+        if (userIdObject == null) {
+            return List.of();
+        }
+
+        int userId = ((Number) userIdObject).intValue();
+
+        String sql = """
+        SELECT task_id, title, due_date,
+               DATEDIFF(due_date, CURDATE()) AS overdue_days
+        FROM tasks
+        WHERE user_id = ?
+          AND status != 'COMPLETED'
+          AND due_date <= CURDATE()
+        ORDER BY due_date ASC
+        """;
+
+        return jdbcTemplate.queryForList(sql, userId);
+    }
+
 }

@@ -76,6 +76,13 @@
                             Signup
                         </button>
                     </li>
+                    <li class = "nav-item">
+                    <button type="button"
+                            class="btn btn-outline-primary"
+                            onclick="enableNotifications()">
+                        Enable Notifications
+                    </button>
+                    </li>
                     <c:if test="${not empty sessionScope.userEmail}">
                         <li class="nav-item ms-3">
                     <span class="badge text-bg-success p-2">
@@ -371,5 +378,91 @@
 </dialog>
 
 </body>
+<script>
+
+    function enableNotifications() {
+
+        if (!("Notification" in window)) {
+            alert("Your browser does not support notifications.");
+            return;
+        }
+
+        Notification.requestPermission().then(permission => {
+
+            if (permission === "granted") {
+                alert("Browser notifications enabled!");
+
+                // Check reminders immediately
+                checkDailyReminders();
+
+            } else {
+                alert("Please allow notifications in browser settings.");
+            }
+
+        });
+    }
+
+    function checkDailyReminders() {
+
+        if (!("Notification" in window) ||
+            Notification.permission !== "granted") {
+            return;
+        }
+
+        fetch("${pageContext.request.contextPath}/dailyReminder")
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch reminders");
+                }
+
+                return response.json();
+            })
+            .then(tasks => {
+
+                const today = new Date().toISOString().split("T")[0];
+
+                tasks.forEach(task => {
+
+                    const notificationKey =
+                        "task_" + task.task_id + "_" + today;
+
+                    if (localStorage.getItem(notificationKey)) {
+                        return;
+                    }
+
+                    const dueDate = new Date(task.due_date)
+                        .toLocaleDateString();
+
+                    const notification = new Notification(
+                        "To-Do Reminder",
+                        {
+                            body: task.title +
+                                "\nDue date: " + dueDate +
+                                "\nPlease complete this task!",
+                        }
+                    );
+
+                    localStorage.setItem(notificationKey, "shown");
+
+                    notification.onclick = function () {
+                        window.focus();
+                        notification.close();
+                    };
+
+                });
+
+            })
+            .catch(error => console.error("Reminder error:", error));
+    }
+    window.addEventListener("load", function () {
+
+        checkDailyReminders();
+        setInterval(checkDailyReminders, 60000);
+
+    });
+
+</script>
+<script>window.addEventListener("load", checkDailyReminders);</script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL" crossorigin="anonymous"></script>
 </html>
