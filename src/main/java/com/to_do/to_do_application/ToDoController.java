@@ -1,4 +1,5 @@
 package com.to_do.to_do_application;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.List;
 
@@ -7,10 +8,13 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.net.ssl.HttpsURLConnection;
 
 @Controller
 public class ToDoController {
@@ -70,5 +74,38 @@ public class ToDoController {
             redirectAttributes.addFlashAttribute("errorMessage", "Invalid email address or password");
         }
         return "redirect:/home";
+    }
+    @PostMapping("addTask")
+    public String addTask(@RequestParam String taskTitle, @RequestParam String taskDescription, @RequestParam LocalDate dueDate,
+                          @RequestParam String taskPriority, @RequestParam String taskCategory, HttpSession session,
+                          RedirectAttributes redirectAttributes){
+        Object userIdObject=session.getAttribute("userId");
+        if(userIdObject == null){
+            redirectAttributes.addFlashAttribute("errorMessage", "Please login first to add a task!");
+            return "redirect:/home";
+        }
+        int userId= ((Number)userIdObject).intValue();
+        sql="INSERT INTO TASKS (user_id, title, description, due_date, priority, category) VALUES (?,?,?,?,?,?)";
+        int rowsAffected=jdbcTemplate.update(sql, userId, taskTitle.trim(), taskDescription, dueDate, taskPriority, taskCategory);
+        if(rowsAffected>0){
+            redirectAttributes.addFlashAttribute("successMessage", "Task added Successfully");
+        }else{
+            redirectAttributes.addFlashAttribute("errorMessage", "Error while adding the task");
+        }
+        return "redirect:/home";
+    }
+    @RequestMapping("viewTasks")
+    public String viewTasks(HttpSession session, Model model, RedirectAttributes redirectAttributes){
+        Object userIdObject=session.getAttribute("userId");
+
+        if(userIdObject==null){
+            redirectAttributes.addFlashAttribute("errorMessage", "Kindly login to view the tasks");
+            return "redirect:/home";
+        }
+        int userId= ((Number)userIdObject).intValue();
+        sql="SELECT task_id, title, description, due_date, priority, category, status FROM tasks where user_id = ? ORDER BY due_date ASC";
+        List<Map<String, Object>> tasks = jdbcTemplate.queryForList(sql, userId);
+        model.addAttribute("tasks", tasks);
+        return "home";
     }
 }
