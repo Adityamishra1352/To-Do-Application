@@ -1,0 +1,108 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
+<!DOCTYPE html>
+<html>
+<title>To Do Application</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
+<body>
+<nav class="navbar md:navbar-expand bg-1 theme-accent">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="home">ToDo Application</a>
+        <button class="btn-icon navbar-toggler" type="button" data-bs-toggle="drawer" data-bs-target="#navbarDrawer" aria-controls="navbarDrawer" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon" aria-hidden="true"></span>
+        </button>
+        <dialog class="drawer drawer-end" tabindex="-1" id="navbarDrawer" aria-labelledby="navbarDrawerLabel">
+            <div class="drawer-header">
+                <h5 class="drawer-title" id="navbarDrawerLabel">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="drawer" aria-label="Close"></button>
+            </div>
+            <div class="drawer-body mb-2 md:mb-0">
+                <ul class="nav navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"
+                           data-bs-toggle="modal"
+                           data-bs-target="#signupModal">
+                            Signup
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </dialog>
+    </div>
+</nav>
+<div class="container d-flex justify-content-center">
+
+    <div class="card p-4">
+        <h4>Welcome to the To_do Application</h4>
+    </div>
+
+</div>
+<div class="btn-group d-flex justify-content-center" role="group" aria-label="Accent theme example">
+    <input type="button" class="btn-solid theme-accent" value = "Add Tasks">
+    <input type="button" class="btn-solid theme-accent" value="View All Tasks" placeholder="View All Tasks">
+</div>
+<!-- Signup Modal -->
+
+<div class="modal fade" id="signupModal" tabindex="-1"
+     aria-labelledby="signupModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="signupModalLabel">
+                    Create Your Account
+                </h5>
+
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <form action="${pageContext.request.contextPath}/signup"
+                      method="post">
+
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+
+                        <input type="email"
+                               class="form-control"
+                               name="email"
+                               placeholder="Enter your email"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+
+                        <input type="password"
+                               class="form-control"
+                               name="password"
+                               placeholder="Create a password"
+                               minlength="8"
+                               required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        Sign Up
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+<script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL" crossorigin="anonymous"></script>
+</html>
