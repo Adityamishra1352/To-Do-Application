@@ -101,7 +101,7 @@ public class ToDoController {
             return "redirect:/home";
         }
         int userId= ((Number)userIdObject).intValue();
-        sql="SELECT task_id, title, description, due_date, priority, category, status, CASE WHEN STATUS != 'COMPLETED' THEN DATEDIFF(due_date, CURDATE()) ELSE 0 END AS overdue_days FROM tasks where user_id = ? ORDER BY due_date ASC";
+        sql="SELECT task_id, title, description, due_date, priority, category, status, CASE WHEN STATUS != 'COMPLETED' THEN DATEDIFF(due_date, CURDATE()) ELSE 0 END AS overdue_days FROM tasks where user_id = ? and del_flag = 'N' ORDER BY due_date ASC";
         List<Map<String, Object>> tasks = jdbcTemplate.queryForList(sql, userId);
         model.addAttribute("tasks", tasks);
         redirectAttributes.addFlashAttribute("viewTasksMessage", "Success");
@@ -128,7 +128,23 @@ public class ToDoController {
         }
         return "redirect:/home";
     }
-
+    @RequestMapping("deleteTask")
+    public String deleteTask(@RequestParam int taskId, HttpSession session, RedirectAttributes redirectAttributes){
+        Object userIdObject= session.getAttribute("userId");
+        if(userIdObject==null){
+            redirectAttributes.addFlashAttribute("errorMessage", "Kindly login first!");
+            return "redirect:/home";
+        }
+        int userId=((Number)userIdObject).intValue();
+        sql="UPDATE tasks set del_flag = 'Y' WHERE user_id=? and task_id=?";
+        int rowsAffected=jdbcTemplate.update(sql,userId, taskId);
+        if(rowsAffected>0){
+            redirectAttributes.addFlashAttribute("successMessage", "Task deleted successfully!!");
+        }else{
+            redirectAttributes.addFlashAttribute("errorMessage", "Task not found");
+        }
+        return "redirect:/home";
+    }
 
     @GetMapping("/dailyReminder")
     @ResponseBody
@@ -148,7 +164,7 @@ public class ToDoController {
         FROM tasks
         WHERE user_id = ?
           AND status != 'COMPLETED'
-          AND due_date <= CURDATE()
+          AND due_date <= CURDATE() AND DEL_FLAG = 'N'
         ORDER BY due_date ASC
         """;
 

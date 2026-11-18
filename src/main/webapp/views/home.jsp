@@ -142,132 +142,166 @@
             View All Tasks
         </button>
     </form>
+    <form action="viewDeletedTasks" method="get" class = "w-50">
+        <button type="submit" class="btn-solid theme-accent w-100 p-3">
+            View Deleted Tasks
+        </button>
+    </form>
 </div>
-<c:if test="${not empty sessionScope.userId}">
-    <div class="container mt-4">
+<%--<c:if test="${not empty sessionScope.userId}">--%>
+<%--    <div class="container mt-4">--%>
 
-        <c:choose>
+<%--        <c:choose>--%>
 
-            <c:when test="${not empty tasks}">
+<%--            <c:when test="${not empty tasks}">--%>
 
-                <div class="table-responsive">
+<%--                <div class="table-responsive">--%>
 
-                    <table class="table table-bordered table-hover align-middle">
+<%--                    <table class="table table-bordered table-hover align-middle">--%>
 
-                        <thead class="table-dark">
-                        <tr>
-                            <th>Task ID</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Due Date</th>
-                            <th>Pending Days</th>
-                            <th>Priority</th>
-                            <th>Category</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
+<%--                        <thead class="table-dark">--%>
+<%--                        <tr>--%>
+<%--                            <th>Task ID</th>--%>
+<%--                            <th>Title</th>--%>
+<%--                            <th>Description</th>--%>
+<%--                            <th>Due Date</th>--%>
+<%--                            <th>Pending Days</th>--%>
+<%--                            <th>Priority</th>--%>
+<%--                            <th>Category</th>--%>
+<%--                            <th>Status</th>--%>
+<%--                            <th>Action</th>--%>
+<%--                            <th>Delete</th>--%>
+<%--                        </tr>--%>
+<%--                        </thead>--%>
 
-                        <tbody>
+<%--                        <tbody>--%>
 
-                        <c:forEach var="task" items="${tasks}">
+<%--                        <c:forEach var="task" items="${tasks}">--%>
 
-                            <tr>
+<%--                            <tr>--%>
 
-                                <td>${task.task_id}</td>
-                                <td>${task.title}</td>
-                                <td>${task.description}</td>
-                                <td>${task.due_date}</td>
-                                <td>${task.overdue_days}</td>
-                                <td>
-                                    <c:choose>
+<%--                                <td>${task.task_id}</td>--%>
+<%--                                <td>${task.title}</td>--%>
+<%--                                <td>${task.description}</td>--%>
+<%--                                <td>${task.due_date}</td>--%>
+<%--                                <td>${task.overdue_days}</td>--%>
+<%--                                <td>--%>
+<%--                                    <c:choose>--%>
 
-                                        <c:when test="${task.priority == 'HIGH'}">
-                                            <span class="badge bg-danger">HIGH</span>
-                                        </c:when>
+<%--                                        <c:when test="${task.priority == 'HIGH'}">--%>
+<%--                                            <span class="badge bg-danger">HIGH</span>--%>
+<%--                                        </c:when>--%>
 
-                                        <c:when test="${task.priority == 'MEDIUM'}">
-                                            <span class="badge bg-warning text-dark">MEDIUM</span>
-                                        </c:when>
+<%--                                        <c:when test="${task.priority == 'MEDIUM'}">--%>
+<%--                                            <span class="badge bg-warning text-dark">MEDIUM</span>--%>
+<%--                                        </c:when>--%>
 
-                                        <c:when test="${task.priority == 'LOW'}">
-                                            <span class="badge bg-success">LOW</span>
-                                        </c:when>
+<%--                                        <c:when test="${task.priority == 'LOW'}">--%>
+<%--                                            <span class="badge bg-success">LOW</span>--%>
+<%--                                        </c:when>--%>
 
-                                        <c:otherwise>
-                                            <span class="badge bg-secondary">
-                                                    ${task.priority}
-                                            </span>
-                                        </c:otherwise>
+<%--                                        <c:otherwise>--%>
+<%--                                            <span class="badge bg-secondary">--%>
+<%--                                                    ${task.priority}--%>
+<%--                                            </span>--%>
+<%--                                        </c:otherwise>--%>
 
-                                    </c:choose>
-                                </td>
-                                <td>${task.category}</td>
-                                <td>${task.status}</td>
+<%--                                    </c:choose>--%>
+<%--                                </td>--%>
+<%--                                <td>${task.category}</td>--%>
+<%--                                <td>${task.status}</td>--%>
 
-                                <td>
+<%--                                <td>--%>
 
-                                    <form action="${pageContext.request.contextPath}/updateTaskStatus"
-                                          method="post">
+<%--                                    <form action="${pageContext.request.contextPath}/updateTaskStatus"--%>
+<%--                                          method="post">--%>
 
-                                        <input type="hidden"
-                                               name="taskId"
-                                               value="${task.task_id}">
+<%--                                        <input type="hidden"--%>
+<%--                                               name="taskId"--%>
+<%--                                               value="${task.task_id}">--%>
 
-                                        <select name="status"
-                                                class="form-select mb-2" id="updateStatus"
-                                                required>
+<%--                                        <select name="status"--%>
+<%--                                                class="form-select mb-2" id="updateStatus"--%>
+<%--                                                required>--%>
 
-                                            <option value="PENDING"
-                                                ${task.status == 'PENDING' ? 'selected' : ''}>
-                                                Pending
-                                            </option>
+<%--                                            <option value="PENDING"--%>
+<%--                                                ${task.status == 'PENDING' ? 'selected' : ''}>--%>
+<%--                                                Pending--%>
+<%--                                            </option>--%>
 
-                                            <option value="IN_PROGRESS"
-                                                ${task.status == 'IN_PROGRESS' ? 'selected' : ''}>
-                                                In Progress
-                                            </option>
+<%--                                            <option value="IN_PROGRESS"--%>
+<%--                                                ${task.status == 'IN_PROGRESS' ? 'selected' : ''}>--%>
+<%--                                                In Progress--%>
+<%--                                            </option>--%>
 
-                                            <option value="COMPLETED"
-                                                ${task.status == 'COMPLETED' ? 'selected' : ''}>
-                                                Completed
-                                            </option>
+<%--                                            <option value="COMPLETED"--%>
+<%--                                                ${task.status == 'COMPLETED' ? 'selected' : ''}>--%>
+<%--                                                Completed--%>
+<%--                                            </option>--%>
 
-                                        </select>
+<%--                                        </select>--%>
 
-                                        <button type="submit"
-                                                class="btn btn-primary bg-accent fg-contrast-accent">
-                                            Update Status
-                                        </button>
+<%--                                        <button type="submit"--%>
+<%--                                                class="btn btn-primary bg-accent fg-contrast-accent">--%>
+<%--                                            Update Status--%>
+<%--                                        </button>--%>
 
-                                    </form>
+<%--                                    </form>--%>
 
-                                </td>
+<%--                                </td>--%>
+<%--                                <td>--%>
+<%--                                    <form action="deleteTask">--%>
+<%--                                        <input type="hidden"--%>
+<%--                                               name="taskId"--%>
+<%--                                               value="${task.task_id}">--%>
+<%--                                        <button type="submit"--%>
+<%--                                                class="btn btn-primary bg-danger fg-contrast-danger">--%>
+<%--                                            Delete--%>
+<%--                                        </button>--%>
+<%--                                    </form>--%>
+<%--                                </td>--%>
+<%--                            </tr>--%>
 
-                            </tr>
+<%--                        </c:forEach>--%>
 
-                        </c:forEach>
+<%--                        </tbody>--%>
 
-                        </tbody>
+<%--                    </table>--%>
 
-                    </table>
+<%--                </div>--%>
 
-                </div>
+<%--            </c:when>--%>
 
-            </c:when>
+<%--            <c:otherwise>--%>
 
-            <c:otherwise>
+<%--                <div class="alert alert-info">--%>
+<%--                    You don't have any tasks yet!--%>
+<%--                </div>--%>
 
-                <div class="alert alert-info">
-                    You don't have any tasks yet!
-                </div>
+<%--            </c:otherwise>--%>
 
-            </c:otherwise>
+<%--        </c:choose>--%>
 
-        </c:choose>
+<%--    </div>--%>
+<%--</c:if>--%>
 
-    </div>
-</c:if>
+<%--adding rest api jsp js--%>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Task ID</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Priority</th>
+        <th>Category</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody id="tasksTableBody"></tbody>
+</table>
+<%--adding rest api jsp js--%>
 <!-- Signup Modal -->
 <dialog class="dialog dialog-slide-down" id="signupModal">
     <div class="dialog-header">
@@ -461,7 +495,68 @@
         setInterval(checkDailyReminders, 60000);
 
     });
+    async function loadTasks() {
 
+        try {
+            const response = await fetch('/api/tasks');
+
+            if (!response.ok) {
+                throw new Error("Unable to fetch tasks");
+            }
+
+            const tasks = await response.json();
+
+            const tableBody =
+                document.getElementById("tasksTableBody");
+
+            tableBody.innerHTML = "";
+            tasks.forEach(task => {
+                console.log("Individual task:", task);
+            });
+            tasks.forEach(task => {
+
+                const row = document.createElement("tr");
+
+                const taskId = document.createElement("td");
+                taskId.textContent = task.taskId;
+
+                const title = document.createElement("td");
+                title.textContent = task.taskTitle;
+
+                const description = document.createElement("td");
+                description.textContent = task.taskDescription;
+
+                const priority = document.createElement("td");
+                priority.textContent = task.taskPriority;
+
+                const category = document.createElement("td");
+                category.textContent = task.taskCategory;
+
+                const status = document.createElement("td");
+                status.textContent = task.status;
+
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.value = task.taskId;
+                input.className = "taskId";
+
+                row.appendChild(taskId);
+                row.appendChild(title);
+                row.appendChild(description);
+                row.appendChild(priority);
+                row.appendChild(category);
+                row.appendChild(status);
+                row.appendChild(input);
+
+                tableBody.appendChild(row);
+
+            });
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    document.addEventListener("DOMContentLoaded", loadTasks);
 </script>
 <script>window.addEventListener("load", checkDailyReminders);</script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL" crossorigin="anonymous"></script>
